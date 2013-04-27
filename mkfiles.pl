@@ -754,7 +754,7 @@ if (defined $makefiles{'vcproj'}) {
 	    }
 	    $object_deps = $all_object_deps{$object_file};
 	    foreach $object_dep (@$object_deps) {
-		if($object_dep =~ /\.c$/io) {
+		if($object_dep =~ /\.(c|cpp)$/io) {
 		    $source_files{$object_dep} = 1;
 		    next;
 		}
@@ -825,10 +825,10 @@ if (defined $makefiles{'vcproj'}) {
     	"# PROP Target_Dir \"\"\r\n".
     	"# ADD BASE CPP /nologo /W3 /GX /O2 ".
 	  (join " ", map {"/I \"..\\..\\$dirpfx$_\""} @srcdirs) .
-	  " /D \"WIN32\" /D \"NDEBUG\" /D \"_WINDOWS\" /D \"_MBCS\" /YX /FD /c\r\n".
+	  " /D \"WIN32\" /D \"NDEBUG\" /D \"_WINDOWS\" /D \"_MBCS\" /D HAS_GSSAPI /D SECURITY_WIN32 /YX /FD /c\r\n".
     	"# ADD CPP /nologo /W3 /GX /O2 ".
 	  (join " ", map {"/I \"..\\..\\$dirpfx$_\""} @srcdirs) .
-	  " /D \"WIN32\" /D \"NDEBUG\" /D \"_WINDOWS\" /D \"_MBCS\" /YX /FD /c\r\n".
+	  " /D \"WIN32\" /D \"NDEBUG\" /D \"_WINDOWS\" /D \"_MBCS\" /D HAS_GSSAPI /D SECURITY_WIN32 /YX /FD /c\r\n".
     	"# ADD BASE MTL /nologo /D \"NDEBUG\" /mktyplib203 /win32\r\n".
     	"# ADD MTL /nologo /D \"NDEBUG\" /mktyplib203 /win32\r\n".
     	"# ADD BASE RSC /l 0x809 /d \"NDEBUG\"\r\n".
@@ -856,10 +856,10 @@ if (defined $makefiles{'vcproj'}) {
     	"# PROP Target_Dir \"\"\r\n".
     	"# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od ".
 	  (join " ", map {"/I \"..\\..\\$dirpfx$_\""} @srcdirs) .
-	  " /D \"WIN32\" /D \"_DEBUG\" /D \"_WINDOWS\" /D \"_MBCS\" /YX /FD /GZ /c\r\n".
+	  " /D \"WIN32\" /D \"_DEBUG\" /D \"_WINDOWS\" /D \"_MBCS\" /D HAS_GSSAPI /D SECURITY_WIN32 /YX /FD /GZ /c\r\n".
     	"# ADD CPP /nologo /W3 /Gm /GX /ZI /Od ".
 	  (join " ", map {"/I \"..\\..\\$dirpfx$_\""} @srcdirs) .
-	  " /D \"WIN32\" /D \"_DEBUG\" /D \"_WINDOWS\" /D \"_MBCS\" /YX /FD /GZ /c\r\n".
+	  " /D \"WIN32\" /D \"_DEBUG\" /D \"_WINDOWS\" /D \"_MBCS\" /D HAS_GSSAPI /D SECURITY_WIN32 /YX /FD /GZ /c\r\n".
     	"# ADD BASE MTL /nologo /D \"_DEBUG\" /mktyplib203 /win32\r\n".
     	"# ADD MTL /nologo /D \"_DEBUG\" /mktyplib203 /win32\r\n".
     	"# ADD BASE RSC /l 0x809 /d \"_DEBUG\"\r\n".
