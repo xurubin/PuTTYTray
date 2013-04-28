@@ -1240,7 +1240,7 @@ void cmdline_error(char *, ...);
  * Exports from config.c.
  */
 struct controlbox;
-void setup_config_box(struct controlbox *b, int midsession,
+int setup_config_box(struct controlbox *b, int midsession,
 		      int protocol, int protcfginfo, int session_storagetype);
 
 /*

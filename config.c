@@ -1200,7 +1200,7 @@ static void portfwd_handler(union control *ctrl, void *dlg,
     }
 }
 
-void setup_config_box(struct controlbox *b, int midsession,
+int setup_config_box(struct controlbox *b, int midsession,
 		      int protocol, int protcfginfo, int session_storagetype) // HACK: PuttyTray / PuTTY File - Added 'int session_storagetype'
 {
     struct controlset *s;
@@ -1341,22 +1341,11 @@ void setup_config_box(struct controlbox *b, int midsession,
 	 * HACK: PuttyTray / PuTTY File
 	 * Add radio buttons
 	 *
-     * Couldn't get the default selection to switch, so I switched the button position instead.
-	 * Must be the lamest solution I ever came up with.
-	 *
-	 * In midsession, changing causes it to be reversed again (wrong). So don't.
 	 */
-	if (midsession || current_storagetype == 0) {
-		c = ctrl_radiobuttons(s, NULL, 'f', 2,
-				  HELPCTX(no_help),
-				  storagetype_handler,
-				  P(ssd), "Sessions from registry", I(0), "Sessions from file", I(1), NULL);
-	} else {
-		c = ctrl_radiobuttons(s, NULL, 'f', 2,
-				  HELPCTX(no_help),
-				  storagetype_handler,
-				  P(ssd), "Sessions from file", I(1), "Sessions from registry", I(0), NULL);
-	}
+	c = ctrl_radiobuttons(s, NULL, 'f', 2,
+				HELPCTX(no_help),
+				storagetype_handler,
+				P(ssd), "Sessions from registry", I(0), "Sessions from file", I(1), NULL);
 	/** HACK: END **/
 
     s = ctrl_getset(b, "Session", "otheropts", NULL);
@@ -2471,4 +2460,5 @@ void setup_config_box(struct controlbox *b, int midsession,
 			  sshbug_handler, I(offsetof(Config,sshbug_maxpkt2)));
 	}
     }
+	return current_storagetype;
 }
