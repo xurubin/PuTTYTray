@@ -45,12 +45,13 @@ struct enumsettings {
 static int storagetype = 0;	// 0 = registry, 1 = file
 
 // PUTTY Tray / PuTTY File - extra variables / structs for file
+#define MAX_SUFFIX 16
 static char seedpath[2 * MAX_PATH + 10] = "\0";
 static char sesspath[2 * MAX_PATH] = "\0";
 static char sshkpath[2 * MAX_PATH] = "\0";
 static char oldpath[2 * MAX_PATH] = "\0";
-static char sessionsuffix[16] = "\0";
-static char keysuffix[16] = "\0";
+static char sessionsuffix[MAX_SUFFIX] = "\0";
+static char keysuffix[MAX_SUFFIX] = "\0";
 
 /* JK: structures for handling settings in memory as linked list */
 struct setItem {
@@ -1252,6 +1253,7 @@ char *file_enum_settings_next(void *handle, char *buffer, int buflen)
     WIN32_FIND_DATA FindFileData;
 	HANDLE hFile;
 	char *otherbuf;
+	char pathFilter[MAX_SUFFIX + 1] = "*";
 	
 	if (!handle) return NULL;	/* JK: new in 0.1.3 */
 	
@@ -1273,7 +1275,8 @@ char *file_enum_settings_next(void *handle, char *buffer, int buflen)
 				sfree(otherbuf);
 				return NULL;
 			}
-			hFile = FindFirstFile("*", &FindFileData);
+			strcat(pathFilter, sessionsuffix);
+			hFile = FindFirstFile(pathFilter, &FindFileData);
 
 			/* JK: skip directories (extra check for "." and ".." too, seems to bug on some machines) */
 			while ((FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || FindFileData.cFileName[0] == '.') { // HACK: PUTTY TRAY / PUTTY FILE: Fixed directory check
