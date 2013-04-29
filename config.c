@@ -175,6 +175,8 @@ void storagetype_handler(union control *ctrl, void *dlg, void *data, int event)
 		button = dlg_radiobutton_get(ctrl, dlg);
 
 		// Switch between registry and file
+		// Note: get_sesslist() will change the internal storage type in winstore.c ( not 
+		// to be confused with cfg->session_storagetype, sigh) through enum_settings_start()
 		if (ctrl->radio.buttondata[button].i == 0) {
 			get_sesslist(&ssd->sesslist, FALSE, 0);
 			get_sesslist(&ssd->sesslist, TRUE, 0);
@@ -1308,7 +1310,7 @@ int setup_config_box(struct controlbox *b, int midsession,
 				HELPCTX(session_saved),
 				sessionsaver_handler, P(ssd));
     ssd->listbox->generic.column = 0;
-    ssd->listbox->listbox.height = 7;
+    ssd->listbox->listbox.height = 19;
     if (!midsession) {
 	ssd->loadbutton = ctrl_pushbutton(s, "Load", 'l',
 					  HELPCTX(session_saved),
