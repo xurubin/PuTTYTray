@@ -194,24 +194,38 @@ static const char *adb_init(void *frontend_handle, void **backend_handle,
     /* send initial data to adb server */
 #define ADB_SHELL_DEFAULT_STR "0012" "host:transport-any"
 #define ADB_SHELL_DEFAULT_STR_LEN (sizeof(ADB_SHELL_DEFAULT_STR)-1)
-#define ADB_SHELL_SERIAL_PREFIX "host:transport:"
-#define ADB_SHELL_SERIAL_PREFIX_LEN (sizeof(ADB_SHELL_SERIAL_PREFIX)-1)
-    do {
+#define ADB_SHELL_TRANSPORT_PREFIX "host:"                   // host:[transport-(usb, local, any)]
+#define ADB_SHELL_TRANSPORT_SERIAL_PREFIX "host:transport:"  // host:transport:[serial-no]
+	do {
 	size_t len = strlen(host);
 	if (len == 0) {
 	    sk_write(adb->s, ADB_SHELL_DEFAULT_STR, ADB_SHELL_DEFAULT_STR_LEN);
 	    sk_flush(adb->s);
 	    adb->state = 1;
-	} else {
-	    char sendbuf[512];
-#define ADB_SHELL_HOST_MAX_LEN (sizeof(sendbuf)-4-ADB_SHELL_SERIAL_PREFIX_LEN)
-	    if (len > ADB_SHELL_HOST_MAX_LEN)
-		len = ADB_SHELL_HOST_MAX_LEN;
-	    sprintf(sendbuf,"%04x" ADB_SHELL_SERIAL_PREFIX, len+ADB_SHELL_SERIAL_PREFIX_LEN);
-	    memcpy(sendbuf+4+ADB_SHELL_SERIAL_PREFIX_LEN, host, len);
-	    sk_write(adb->s,sendbuf,len+4+ADB_SHELL_SERIAL_PREFIX_LEN);
+	} else{
+	    char *sendbuf;
+		char *hostprefix;
+		int buflen;
+
+		if ( (!strcmp(host, "transport-usb")) || (!strcmp(host, "transport-local")) || (!strcmp(host, "transport-any"))) {
+			hostprefix = ADB_SHELL_TRANSPORT_PREFIX; 
+		} else {
+			hostprefix = ADB_SHELL_TRANSPORT_SERIAL_PREFIX; 
+		}
+
+		// sendbuf consists of (4 byte hex length field, hostprefix, host)
+		buflen = 4 + strlen(hostprefix) + len;
+		sendbuf = dupprintf("%04x%s%s", buflen - 4, hostprefix, host);
+
+	    sk_write(adb->s,sendbuf,buflen);
 	    sk_flush(adb->s);
 	    adb->state = 1;
+
+		// Change realhost, which becomes the title of the window.
+		sfree(*realhost);
+		*realhost = dupstr(sendbuf + 4 + 5);
+
+		sfree(sendbuf);
 	}
     } while (0);
     return NULL;
