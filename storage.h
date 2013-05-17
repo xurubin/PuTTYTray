@@ -19,6 +19,7 @@
  * Function to force the storage loader to a certain type
  */
 void set_storagetype(int new_storagetype);
+int  get_storagetype();
 
 /*
  * Write a saved session. The caller is expected to call

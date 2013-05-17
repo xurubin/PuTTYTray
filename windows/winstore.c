@@ -119,6 +119,9 @@ void set_storagetype(int new_storagetype)
 	storagetype = new_storagetype;
 }
 
+int  get_storagetype() {
+	return storagetype;
+}
 
 /*
  * Write a saved session. The caller is expected to call

@@ -608,10 +608,20 @@ void save_open_settings(void *sesskey, Config *cfg)
 void load_settings(char *section, Config * cfg)
 {
     void *sesskey;
+    int cur_storagetype = get_storagetype();
 
     sesskey = open_settings_r(section);
+    // Quick hack: if we are loading "default settings" but no
+    // such entry exists in registry, try file as well.
+    if (cur_storagetype == 0 && (!section || !*section) && !sesskey) {
+        set_storagetype(1);
+        sesskey = open_settings_r(section);
+    }
+
     load_open_settings(sesskey, cfg);
     close_settings_r(sesskey);
+
+    set_storagetype(cur_storagetype);
 
     if (cfg_launchable(cfg))
         add_session_to_jumplist(section);
